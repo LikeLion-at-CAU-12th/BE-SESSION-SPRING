@@ -1,9 +1,7 @@
 package com.mutsa_cau12.springboot_session.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -22,4 +20,10 @@ public class CategoryArticle {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "article_id")
     private Article article;
+
+    @Builder
+    public CategoryArticle(Category category, Article article) {
+        this.category = category;
+        this.article = article;
+    }
 }
