@@ -1,9 +1,7 @@
 package com.mutsa_cau12.springboot_session.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
@@ -18,7 +16,21 @@ public class ArticleLog extends BaseTimeEntity {
     private String title;
     private String content;
 
-    @OneToOne(cascade = ALL, fetch = LAZY)
+    @OneToOne(cascade = CascadeType.ALL,fetch = LAZY)
     @JoinColumn(name = "article_id")
     private Article article;
+
+    @Builder
+    public ArticleLog(String title, String content, Article article) {
+        this.title = title;
+        this.content = content;
+        this.article = article;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }
