@@ -1,6 +1,7 @@
 package com.mutsa_cau12.springboot_session.service;
 
 import com.mutsa_cau12.springboot_session.domain.Member;
+import com.mutsa_cau12.springboot_session.dto.JoinRequest;
 import com.mutsa_cau12.springboot_session.repository.MemberJpaRepository;
 import com.mutsa_cau12.springboot_session.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberJpaRepository memberJpaRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public Page<Member> getMembersByPage(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("username").ascending());
@@ -29,5 +33,19 @@ public class MemberService {
         for (Member member : members) {
             System.out.println("ID: " + member.getId() + ", Username: " + member.getUsername());
         }
+    }
+
+    public void join(JoinRequest joinRequest) {
+        if (memberJpaRepository.existsByUsername(joinRequest.getUsername())) {
+            return;
+        }
+
+
+        Member member = Member.builder()
+                .username(joinRequest.getUsername())
+                .password(bCryptPasswordEncoder.encode(joinRequest.getPassword()))
+                .build();
+
+        memberJpaRepository.save(member);
     }
 }

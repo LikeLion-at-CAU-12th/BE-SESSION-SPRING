@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface MemberJpaRepository extends JpaRepository<Member,Long> {
-    List<Member> findByUsername(String username);
+    Member findByUsername(String username);
+    boolean existsByUsername(String username);
 }
