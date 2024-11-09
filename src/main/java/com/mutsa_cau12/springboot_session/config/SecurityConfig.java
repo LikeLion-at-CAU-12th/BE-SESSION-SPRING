@@ -1,6 +1,7 @@
 package com.mutsa_cau12.springboot_session.config;
 
 
+import com.mutsa_cau12.springboot_session.service.CustomOAuth2UserService;
 import com.mutsa_cau12.springboot_session.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     private static void corsAllow(CorsConfigurer<HttpSecurity> corsCustomizer) {
         corsCustomizer.configurationSource(request -> {
@@ -56,6 +58,12 @@ public class SecurityConfig {
                         .requestMatchers("/api/**").authenticated())
 
                 .formLogin(Customizer.withDefaults())
+                .oauth2Login(oauth -> oauth
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                        .defaultSuccessUrl("/login", true)
+                )
 
                 .userDetailsService(customUserDetailsService)
 
